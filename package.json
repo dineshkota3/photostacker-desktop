@@ -36,6 +36,20 @@
         }
       ],
       "identity": null
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 200
+        },
+        {
+          "path": "fixer/START HERE.command",
+          "type": "file",
+          "x": 360,
+          "y": 200
+        }
+      ]
     }
   }
 }

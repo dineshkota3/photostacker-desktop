@@ -41,13 +41,9 @@ jobs:
           {
             echo "Auto-built from latest main."
             echo ""
-            echo "**Install:** drag Photo Stacker.app to Applications, then run this in Terminal once (macOS blocks unsigned downloads with a misleading 'damaged' message):"
+            echo "**Install:** open the DMG and double-click **START HERE** — it installs the app to /Applications and opens it. If macOS asks, click Open/Allow. No Terminal needed."
             echo ""
-            echo '```'
-            echo 'xattr -cr "/Applications/Photo Stacker.app"'
-            echo '```'
-            echo ""
-            echo "Then open the app normally."
+            echo "Manual alternative: drag Photo Stacker.app to Applications and run 'xattr -cr \"/Applications/Photo Stacker.app\"' in Terminal once (macOS shows a misleading 'damaged' message on unsigned downloads)."
           } > /tmp/notes.md
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" || \
             gh release create "$TAG" --title "Photo Stacker $VERSION" --notes-file /tmp/notes.md
