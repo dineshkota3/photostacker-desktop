@@ -32,6 +32,11 @@ jobs:
           # unsigned personal build, same as local
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
+      - name: Ad-hoc code sign (required for Apple Silicon to run at all)
+        run: |
+          codesign --force --deep --sign - "release/mac-arm64/Photo Stacker.app" || true
+          codesign --force --deep --sign - "release/mac/Photo Stacker.app" || true
+
       - name: Update release assets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +47,15 @@ jobs:
           echo "Releasing $TAG"
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" || \
             gh release create "$TAG" --title "Photo Stacker $VERSION" \
-              --notes "Auto-built from latest main. Install: drag Photo Stacker.app to Applications, right-click → Open the first time (unsigned build)."
+              --notes "Auto-built from latest main.
+
+**Install:** drag Photo Stacker.app to Applications, then run this in Terminal (one time — macOS blocks unsigned downloads with a misleading 'damaged' message):
+
+\`\`\`
+xattr -cr \"/Applications/Photo Stacker.app\"
+\`\`\`
+
+Then open the app normally." 
           gh release upload "$TAG" \
             "release/Photo Stacker-$VERSION-arm64.dmg" \
             "release/Photo Stacker-$VERSION.dmg#Photo Stacker $VERSION (Intel Mac)" \
