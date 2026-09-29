@@ -1,0 +1,45 @@
+name: Build DMG and update release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app (from submodule)
+        run: cd web && npm ci && npm run build -- --base=./
+
+      - name: Build DMGs (Apple Silicon + Intel)
+        run: npx electron-builder --mac dmg --arm64 --x64 --publish never
+        env:
+          # unsigned personal build, same as local
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Update release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" || \
+            gh release create v0.1.0 --title "Photo Stacker 0.1.0" \
+              --notes "Auto-built from latest main. Install: drag Photo Stacker.app to Applications, right-click → Open the first time (unsigned build)."
+          gh release upload v0.1.0 \
+            "release/Photo Stacker-0.1.0-arm64.dmg" \
+            "release/Photo Stacker-0.1.0.dmg#Photo Stacker 0.1.0 (Intel Mac)" \
+            --repo "$GITHUB_REPOSITORY" --clobber
