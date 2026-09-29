@@ -36,10 +36,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" || \
-            gh release create v0.1.0 --title "Photo Stacker 0.1.0" \
+          # Tag follows the version in package.json
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+          echo "Releasing $TAG"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" || \
+            gh release create "$TAG" --title "Photo Stacker $VERSION" \
               --notes "Auto-built from latest main. Install: drag Photo Stacker.app to Applications, right-click → Open the first time (unsigned build)."
-          gh release upload v0.1.0 \
-            "release/Photo Stacker-0.1.0-arm64.dmg" \
-            "release/Photo Stacker-0.1.0.dmg#Photo Stacker 0.1.0 (Intel Mac)" \
+          gh release upload "$TAG" \
+            "release/Photo Stacker-$VERSION-arm64.dmg" \
+            "release/Photo Stacker-$VERSION.dmg#Photo Stacker $VERSION (Intel Mac)" \
             --repo "$GITHUB_REPOSITORY" --clobber
