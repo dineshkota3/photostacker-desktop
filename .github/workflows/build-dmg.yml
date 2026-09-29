@@ -41,11 +41,11 @@ jobs:
           TAG="v$VERSION-$GITHUB_RUN_NUMBER"
           echo "Releasing $TAG"
           {
-            echo "Auto-built from latest main."
+            echo "Auto-built from latest commit."
             echo ""
-            echo "**Install:** open the DMG and double-click **START HERE** — it installs the app to /Applications and opens it. If macOS asks, click Open/Allow. No Terminal needed."
+            echo "**For most people — use the web version (nothing to install):** https://dineshkota3.github.io/photostacker/"
             echo ""
-            echo "Manual alternative: drag Photo Stacker.app to Applications and run 'xattr -cr \"/Applications/Photo Stacker.app\"' in Terminal once (macOS shows a misleading 'damaged' message on unsigned downloads)."
+            echo "This desktop DMG adds Move-to-Trash but is unsigned, so macOS blocks it with a misleading 'damaged' message. Install manually: drag Photo Stacker.app to Applications, run 'xattr -cr \"/Applications/Photo Stacker.app\"' in Terminal once, then open normally."
           } > /tmp/notes.md
           gh release create "$TAG" --title "Photo Stacker $TAG" --notes-file /tmp/notes.md --repo "$GITHUB_REPOSITORY"
           gh release upload "$TAG" \
