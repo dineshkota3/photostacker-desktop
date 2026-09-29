@@ -1,7 +1,7 @@
 {
   "name": "photostacker-desktop",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Photo Stacker \u2014 find similar photos, keep the best ones (desktop app)",
   "main": "main.js",
   "scripts": {
