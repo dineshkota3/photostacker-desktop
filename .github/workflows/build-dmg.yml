@@ -45,17 +45,17 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           TAG="v$VERSION"
           echo "Releasing $TAG"
+          cat > /tmp/notes.md <<'NOTES'
+Auto-built from latest main.
+
+**Install:** drag Photo Stacker.app to Applications, then run this in Terminal once (macOS blocks unsigned downloads with a misleading "damaged" message):
+
+    xattr -cr "/Applications/Photo Stacker.app"
+
+Then open the app normally.
+NOTES
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" || \
-            gh release create "$TAG" --title "Photo Stacker $VERSION" \
-              --notes "Auto-built from latest main.
-
-**Install:** drag Photo Stacker.app to Applications, then run this in Terminal (one time — macOS blocks unsigned downloads with a misleading 'damaged' message):
-
-\`\`\`
-xattr -cr \"/Applications/Photo Stacker.app\"
-\`\`\`
-
-Then open the app normally." 
+            gh release create "$TAG" --title "Photo Stacker $VERSION" --notes-file /tmp/notes.md
           gh release upload "$TAG" \
             "release/Photo Stacker-$VERSION-arm64.dmg" \
             "release/Photo Stacker-$VERSION.dmg#Photo Stacker $VERSION (Intel Mac)" \
