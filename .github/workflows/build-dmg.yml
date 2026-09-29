@@ -36,7 +36,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          TAG="v$VERSION"
+          # New release on every commit: append the CI build number so each
+          # push gets its own unique tag (v0.3.0-46, v0.3.0-47, ...).
+          TAG="v$VERSION-$GITHUB_RUN_NUMBER"
           echo "Releasing $TAG"
           {
             echo "Auto-built from latest main."
@@ -45,8 +47,7 @@ jobs:
             echo ""
             echo "Manual alternative: drag Photo Stacker.app to Applications and run 'xattr -cr \"/Applications/Photo Stacker.app\"' in Terminal once (macOS shows a misleading 'damaged' message on unsigned downloads)."
           } > /tmp/notes.md
-          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" || \
-            gh release create "$TAG" --title "Photo Stacker $VERSION" --notes-file /tmp/notes.md
+          gh release create "$TAG" --title "Photo Stacker $TAG" --notes-file /tmp/notes.md --repo "$GITHUB_REPOSITORY"
           gh release upload "$TAG" \
             "release/Photo Stacker-$VERSION-arm64.dmg" \
             "release/Photo Stacker-$VERSION.dmg#Photo Stacker $VERSION (Intel Mac)" \
